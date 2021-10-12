@@ -82,6 +82,13 @@ class Board(Grid):
         self.active.y += 1
         return False
 
+    def rotate_current(self, turns):
+        self.active.rotate(turns)
+        self.bound_piece(self.active)
+        if self.collides(self.active, self.active.x, self.active.y):
+            self.active.rotate(-turns)
+            self.bound_piece(self.active)
+
     def drop(self):
         while not self.apply_gravity():
             pass

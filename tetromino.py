@@ -40,11 +40,11 @@ class I_Block(Tetromino):
             return
         if self.current_state == 1:
             self.current_state = 2
-            super().__init__(self.state2)
+            self._state = self.state2
             return
         if self.current_state == 2:
             self.current_state = 1
-            super().__init__(self.state1)
+            self._state = self.state1
 
 
 class L_Block(Tetromino):
@@ -64,6 +64,23 @@ class J_Block(L_Block):
         self._state = np.fliplr(self._state)
 
 
+class S_Block(Tetromino):
+    def __init__(self):
+        super().__init__(np.array([
+            [False]*4,
+            [False, True, True, False],
+            [False, False, True, True],
+            [False]*4
+        ]
+        ))
+
+
+class Z_Block(S_Block):
+    def __init__(self):
+        super().__init__()
+        self._state = np.fliplr(self._state)
+
+
 class T_Block(Tetromino):
     def __init__(self):
         super().__init__(
@@ -77,13 +94,13 @@ class T_Block(Tetromino):
             ))
 
 
-running_set = [0, 1, 2, 3, 4]
+running_set = [0, 1, 2, 3, 4, 5, 6]
 
 
 def random_tetromino() -> Tetromino:
     global running_set
     if len(running_set) == 0:
-        running_set = [0, 1, 2, 3, 4]
+        running_set = [0, 1, 2, 3, 4, 5, 6]
     r = running_set.pop(random.randrange(len(running_set)))
     print(r)
     if r == 0:
@@ -96,4 +113,8 @@ def random_tetromino() -> Tetromino:
         return J_Block()
     if r == 4:
         return T_Block()
+    if r == 5:
+        return S_Block()
+    if r == 6:
+        return Z_Block()
     return Tetromino()
