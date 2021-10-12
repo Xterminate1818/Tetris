@@ -23,6 +23,8 @@ class Grid:
         self._state[y, x] = val
 
     def sset(self, x: int, y: int, val: bool) -> None:
+        if not (0 <= x < self.WIDTH and 0 <= y < self.HEIGHT):
+            return
         try:
             self.set(x, y, val)
         except IndexError:

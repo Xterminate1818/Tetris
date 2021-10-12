@@ -1,5 +1,8 @@
+import random
 import numpy as np
 from grid import Grid
+
+random.seed()
 
 
 class Tetromino(Grid):
@@ -19,19 +22,29 @@ class Tetromino(Grid):
         return ret
 
 
-class Test_Block(Tetromino):
-    def __init__(self):
-        super().__init__(np.array([[True, False, False, False], [False] * 4, [False] * 4, [False] * 4, ]))
-
-
 class O_Block(Tetromino):
     def __init__(self):
         super().__init__(np.array([[False] * 4, [False, True, True, False], [False, True, True, False], [False] * 4, ]))
 
 
 class I_Block(Tetromino):
+    state1 = np.array([[False, False, True, False]] * 4)
+    state2 = np.rot90(state1)
+
     def __init__(self):
-        super().__init__(np.array([[False, False, True, False]] * 4))
+        super().__init__(self.state1)
+        self.current_state = 1
+
+    def rotate(self, turns):
+        if turns % 2 == 0:
+            return
+        if self.current_state == 1:
+            self.current_state = 2
+            super().__init__(self.state2)
+            return
+        if self.current_state == 2:
+            self.current_state = 1
+            super().__init__(self.state1)
 
 
 class L_Block(Tetromino):
@@ -62,3 +75,25 @@ class T_Block(Tetromino):
                     [False, False, False, False],
                 ]
             ))
+
+
+running_set = [0, 1, 2, 3, 4]
+
+
+def random_tetromino() -> Tetromino:
+    global running_set
+    if len(running_set) == 0:
+        running_set = [0, 1, 2, 3, 4]
+    r = running_set.pop(random.randrange(len(running_set)))
+    print(r)
+    if r == 0:
+        return O_Block()
+    if r == 1:
+        return I_Block()
+    if r == 2:
+        return L_Block()
+    if r == 3:
+        return J_Block()
+    if r == 4:
+        return T_Block()
+    return Tetromino()
