@@ -31,7 +31,7 @@ class Grid:
             pass
 
     def rotate(self, turns):
-        self._state = np.rot90(self._state, turns)
+        return np.rot90(self._state, turns)
 
     def _mask(self, mask_type, other, offset_x, offset_y):
         """
