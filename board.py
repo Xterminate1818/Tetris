@@ -52,4 +52,5 @@ class Board(Grid):
         if piece.left() <= 0:
             piece.x = 0
         if piece.right() >= self.WIDTH:
-            pass
+            piece.x -= piece.right() - self.WIDTH + 1
+        return piece

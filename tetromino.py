@@ -6,10 +6,8 @@ random.seed()
 
 
 class Tetromino(Grid):
-    SIZE = 4
-
-    def __init__(self, state=None):
-        super().__init__(self.SIZE, self.SIZE, init=state)
+    def __init__(self, state=None, size=3):
+        super().__init__(size, size, init=state)
         self.x = 0
         self.y = 0
 
@@ -22,7 +20,7 @@ class Tetromino(Grid):
         return ret
 
     def rotate(self, turns):
-        new = Tetromino(np.rot90(self._state))
+        new = Tetromino(np.rot90(self._state), size=self.WIDTH)
         new.x = self.x
         new.y = self.y
         return new
@@ -66,34 +64,26 @@ class Tetromino(Grid):
 
 class O_Block(Tetromino):
     def __init__(self):
-        super().__init__(np.array([[False] * 4, [False, True, True, False], [False, True, True, False], [False] * 4, ]))
+        super().__init__(np.array([[False] * 4, [False, True, True, False], [False, True, True, False], [False] * 4, ]),
+                         size=4)
 
 
 class I_Block(Tetromino):
-    state1 = np.array([[False, False, True, False]] * 4)
-    state2 = np.rot90(state1)
-
-    def __init__(self, state=1):
-        if state == 1:
-            super().__init__(self.state1)
-        else:
-            super().__init__(self.state2)
-        self.current_state = state
-
-    def rotate(self, turns):
-        new = I_Block((self.current_state + turns) % 2)
-        new.x = self.x
-        new.y = self.y
-        return new
+    def __init__(self):
+        super().__init__(np.array(
+            [[False, False, True, False],
+             [False, False, True, False],
+             [False, False, True, False],
+             [False, False, True, False]]),
+            size=4)
 
 
 class L_Block(Tetromino):
     def __init__(self):
         super().__init__(np.array([
-            [False, False, False, False],
-            [False, True, False, False],
-            [False, True, False, False],
-            [False, True, True, False],
+            [False, True, False],
+            [False, True, False],
+            [False, True, True],
         ]
         ))
 
@@ -109,21 +99,36 @@ class T_Block(Tetromino):
         super().__init__(
             np.array(
                 [
-                    [False, True, False, False],
-                    [False, True, True, False],
-                    [False, True, False, False],
-                    [False, False, False, False],
+                    [False, True, False],
+                    [False, True, True],
+                    [False, True, False],
                 ]
             ))
 
 
-running_set = [0, 1, 2, 3, 4]
+class S_Block(Tetromino):
+    def __init__(self):
+        super().__init__(
+            np.array([
+                [True, True, False],
+                [False, True, True],
+                [False, False, False]]
+            ))
+
+
+class Z_Block(S_Block):
+    def __init__(self):
+        super().__init__()
+        self._state = np.fliplr(self._state)
+
+
+running_set = [0, 1, 2, 3, 4, 5, 6]
 
 
 def random_tetromino() -> Tetromino:
     global running_set
     if len(running_set) == 0:
-        running_set = [0, 1, 2, 3, 4]
+        running_set = [0, 1, 2, 3, 4, 5, 6]
     r = running_set.pop(random.randrange(len(running_set)))
     if r == 0:
         return O_Block()
@@ -135,4 +140,8 @@ def random_tetromino() -> Tetromino:
         return J_Block()
     if r == 4:
         return T_Block()
+    if r == 5:
+        return S_Block()
+    if r == 6:
+        return Z_Block()
     return Tetromino()

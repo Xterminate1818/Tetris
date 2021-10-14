@@ -6,9 +6,12 @@ import sys
 
 class Game:
 	GRID_SIZE = 25
-	GRAVITY = 200
+	GRAVITY = 300
 
 	def __init__(self):
+		self.font = pg.font.Font('assets/font.TTF', 40)
+		self.text = self.font.render("Tetris", False, (255, 255, 255))
+
 		self.display = pg.display.set_mode((250, 500))
 		self.clock = pg.time.Clock()
 
@@ -27,7 +30,9 @@ class Game:
 		})
 
 	def _shift_x(self, amount):
-		if self.piece.left() + amount >= 0 and self.piece.right() + amount < self.board.WIDTH:
+		if self.piece.left() + amount >= 0 and\
+				self.piece.right() + amount < self.board.WIDTH and\
+				not self.board.collides(self.piece, self.piece.x + amount, self.piece.y):
 			self.piece.x += amount
 
 	def _get_piece_drop(self):
@@ -66,12 +71,16 @@ class Game:
 		self.display.fill((0, 0, 0))
 		self._draw_board()
 		self._draw_piece()
+		self.display.blit(self.text, (0, 0))
 		pg.display.flip()
 
 	def drop(self):
 		self.piece.y = self._get_piece_drop()
 		self.board.add_piece(self.piece)
 		self.piece = random_tetromino()
+		if self.board.collides(self.piece, self.piece.x, self.piece.y):
+			pg.quit()
+			sys.exit()
 
 	def poll_input(self):
 		for event in pg.event.get():
@@ -89,9 +98,17 @@ class Game:
 		if self.input_buffer.get('drop'):
 			self.drop()
 		if self.input_buffer.get('rotate left'):
-			self.piece = self.piece.rotate(1)
+			test = self.piece.rotate(1)
+			test = self.board.bound_piece(test)
+			if not self.board.collides(test, test.x, test.y):
+				self.piece = test
+				self.last_gravity = pg.time.get_ticks()
 		if self.input_buffer.get('rotate right'):
-			self.piece = self.piece.rotate(-1)
+			test = self.piece.rotate(-1)
+			test = self.board.bound_piece(test)
+			if not self.board.collides(test, test.x, test.y):
+				self.piece = test
+				self.last_gravity = pg.time.get_ticks()
 
 	def apply_gravity(self):
 		gravity = self.GRAVITY * 0.5 if self.input_buffer.is_held('down') else self.GRAVITY
@@ -116,4 +133,5 @@ class Game:
 
 if __name__ == "__main__":
 	pg.init()
+	pg.font.init()
 	Game().start()
