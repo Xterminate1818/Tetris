@@ -1,6 +1,7 @@
 import random
 import numpy as np
 from grid import Grid
+from widget import Widget
 
 random.seed()
 
@@ -34,7 +35,7 @@ class Tetromino(Grid):
                     ret = y
         return self.y + ret
 
-    # Bottome of the tetromino
+    # Bottom of the tetromino
     def bottom(self):
         ret = 0
         for x in range(self.WIDTH):
@@ -120,6 +121,12 @@ class Z_Block(S_Block):
     def __init__(self):
         super().__init__()
         self._state = np.fliplr(self._state)
+
+
+class TetrominoWidget(Widget):
+    def __init__(self, tetro: Tetromino, tile_size=25):
+        pass
+
 
 
 running_set = [0, 1, 2, 3, 4, 5, 6]

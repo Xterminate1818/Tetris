@@ -1,18 +1,19 @@
 from board import *
 from tetromino import *
 from input import *
+from widget import Widget
 import sys
 
 
-class Game:
+class Game(Widget):
 	GRID_SIZE = 25
 	GRAVITY = 300
 
 	def __init__(self):
+		super().__init__(pg.display.set_mode((250, 500)))
 		self.font = pg.font.Font('assets/font.TTF', 40)
 		self.text = self.font.render("Tetris", False, (255, 255, 255))
 
-		self.display = pg.display.set_mode((250, 500))
 		self.clock = pg.time.Clock()
 
 		self.board = Board()
@@ -52,7 +53,7 @@ class Game:
 			for y in range(self.board.HEIGHT):
 				rect = (x * self.GRID_SIZE, y * self.GRID_SIZE, self.GRID_SIZE, self.GRID_SIZE)
 				color = get_color(x, y) if self.board.get(x, y) else (0, 0, 0)
-				pg.draw.rect(self.display, color, rect)
+				pg.draw.rect(self.surf, color, rect)
 
 	def _draw_piece(self):
 		if self.piece is None:
@@ -65,13 +66,13 @@ class Game:
 						(y + self.piece.y) * self.GRID_SIZE,
 						self.GRID_SIZE, self.GRID_SIZE
 					)
-					pg.draw.rect(self.display, get_color(x + self.piece.x, y + self.piece.y), rect)
+					pg.draw.rect(self.surf, get_color(x + self.piece.x, y + self.piece.y), rect)
 
-	def draw(self):
-		self.display.fill((0, 0, 0))
+	def draw_tree(self):
+		self.surf.fill((0, 0, 0))
 		self._draw_board()
 		self._draw_piece()
-		self.display.blit(self.text, (0, 0))
+		self.surf.blit(self.text, (0, 0))
 		pg.display.flip()
 
 	def drop(self):
@@ -123,7 +124,7 @@ class Game:
 	def loop(self):
 		self.poll_input()
 		self.apply_gravity()
-		self.draw()
+		self.draw_tree()
 		self.clock.tick(60)
 
 	def start(self):
