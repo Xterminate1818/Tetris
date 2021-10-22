@@ -1,18 +1,18 @@
 from board import *
 from tetromino import *
 from input import *
-from widget import Widget
 import sys
 
 
-class Game(Widget):
+class Game:
 	GRID_SIZE = 25
 	GRAVITY = 300
 
 	def __init__(self):
-		super().__init__(pg.display.set_mode((250, 500)))
 		self.font = pg.font.Font('assets/font.TTF', 40)
 		self.text = self.font.render("Tetris", False, (255, 255, 255))
+
+		self.surf = pg.display.set_mode((250, 500))
 
 		self.clock = pg.time.Clock()
 

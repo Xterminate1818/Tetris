@@ -1,7 +1,6 @@
 import random
 import numpy as np
 from grid import Grid
-from widget import Widget
 
 random.seed()
 
@@ -11,6 +10,7 @@ class Tetromino(Grid):
         super().__init__(size, size, init=state)
         self.x = 0
         self.y = 0
+        self.id = 0
 
     def depth_mask(self) -> list[int]:
         ret = [-1] * self.WIDTH
@@ -67,6 +67,7 @@ class O_Block(Tetromino):
     def __init__(self):
         super().__init__(np.array([[False] * 4, [False, True, True, False], [False, True, True, False], [False] * 4, ]),
                          size=4)
+        self.id = 1
 
 
 class I_Block(Tetromino):
@@ -77,6 +78,7 @@ class I_Block(Tetromino):
              [False, False, True, False],
              [False, False, True, False]]),
             size=4)
+        self.id = 2
 
 
 class L_Block(Tetromino):
@@ -87,12 +89,14 @@ class L_Block(Tetromino):
             [False, True, True],
         ]
         ))
+        self.id = 3
 
 
 class J_Block(L_Block):
     def __init__(self):
         super().__init__()
         self._state = np.fliplr(self._state)
+        self.id = 4
 
 
 class T_Block(Tetromino):
@@ -105,6 +109,7 @@ class T_Block(Tetromino):
                     [False, True, False],
                 ]
             ))
+        self.id = 5
 
 
 class S_Block(Tetromino):
@@ -115,18 +120,14 @@ class S_Block(Tetromino):
                 [False, True, True],
                 [False, False, False]]
             ))
+        self.id = 6
 
 
 class Z_Block(S_Block):
     def __init__(self):
         super().__init__()
         self._state = np.fliplr(self._state)
-
-
-class TetrominoWidget(Widget):
-    def __init__(self, tetro: Tetromino, tile_size=25):
-        pass
-
+        self.id = 7
 
 
 running_set = [0, 1, 2, 3, 4, 5, 6]

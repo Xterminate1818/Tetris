@@ -2,7 +2,6 @@ import numpy as np
 import pygame as pg
 from grid import Grid
 from tetromino import Tetromino
-from widget import Widget
 
 
 def get_color(x, y) -> tuple[int, int, int]:
@@ -56,9 +55,3 @@ class Board(Grid):
         if piece.right() >= self.WIDTH:
             piece.x -= piece.right() - self.WIDTH + 1
         return piece
-
-
-class BoardWidget(Widget):
-    def __init__(self, tile_size=25):
-        self._board = Board()
-        super().__init__(pg.Surface((self._board.WIDTH * tile_size, self._board.HEIGHT * tile_size)))
